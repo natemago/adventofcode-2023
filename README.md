@@ -5,3 +5,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 
 * [Day 1, Trebuchet?!](day1-trebuchet) :elf: :ladder: :bow_and_arrow:
 * [Day 2, Cube Conundrum](day2-cube-conundrum) :ice_cube: :ice_cube: :ice_cube:
+* [Day 4, Scratchcards](day4-scratchcards) :game_die: :flower_playing_cards: :black_joker:
