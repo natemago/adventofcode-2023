@@ -7,3 +7,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 2, Cube Conundrum](day2-cube-conundrum) :ice_cube: :ice_cube: :ice_cube:
 * [Day 3, Gear Ratios](da3-gear-ratios) :gear: :wrench: :gear:
 * [Day 4, Scratchcards](day4-scratchcards) :game_die: :flower_playing_cards: :black_joker:
+* [Day 5, Seeds Fertilizer, Soil] :seedling: :herb: :cactus:
