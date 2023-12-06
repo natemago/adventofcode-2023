@@ -3,16 +3,19 @@ struct Category
     high::Int64
 end
 
+
 struct Range 
     source::Category
     dest::Category
 end
+
 
 struct Map
     source::String
     dest::String
     ranges::Vector{Range}
 end
+
 
 function read_input(fn)
     open(fn) do f
@@ -62,9 +65,11 @@ function in_src_category(seed::Int, cat::Category)
     return seed >= cat.low && seed <= cat.high
 end
 
+
 function in_range(seed::Int, range::Range)
     return in_src_category(seed, range.source)
 end
+
 
 function map_seed(seed::Int, map::Map)
     for range in map.ranges
@@ -74,6 +79,7 @@ function map_seed(seed::Int, map::Map)
     end
     return seed
 end
+
 
 function intersect(a::Category, b::Category)
     if a.low > b.high || a.high < b.low
@@ -127,6 +133,7 @@ function map_cat_to_range(cat::Category, range::Range)
     return Category[overlap], rest
 end
 
+
 function map_cats(cats::Vector{Category}, range::Range)
     mapped = Category[]
     unmapped = Category[]
@@ -137,6 +144,7 @@ function map_cats(cats::Vector{Category}, range::Range)
     end
     return mapped, unmapped
 end
+
 
 function map_to_ranges(cats::Vector{Category}, ranges::Vector{Range})::Vector{Category}
     mapped = Category[]
@@ -149,12 +157,6 @@ function map_to_ranges(cats::Vector{Category}, ranges::Vector{Range})::Vector{Ca
     return vcat(mapped, unmapped)
 end
 
-
-
-
-function map_categories()
-    
-end
 
 function part1(almanac)
     result = Inf64
