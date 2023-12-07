@@ -9,7 +9,8 @@ function read_input(fn)
     end
 end
 
-CARDS = "23456789TJQKA"
+CARDS    = "23456789TJQKA"
+CARDS_P2 = "J23456789TQKA"
 KINDS = reverse!(["five", "four", "full-house", "three", "two-pair", "pair", "high-card"])
 
 
@@ -39,13 +40,61 @@ function kind(hand)
     end
 end
 
-function cards_lt(a, b)
-    ka, kb = kind(a), kind(b)
+function variations(elems, choose)
+    return _variations(choose, [], elems)
+end
+
+function _variations(choose, variation, elems)
+    res = []
+    if length(variation) == choose
+        return [variation]
+    end
+    for el in elems
+        for_el = _variations(choose, vcat(variation, [el]), elems)
+        res = vcat(res, for_el)
+    end
+    return res
+end
+
+function kind_with_joker(hand)
+    jokers_at = findall(==('J'), hand)
+    if length(jokers_at) == 0
+        return kind(hand)
+    end
+    other_cards = replace(hand, "J" => "")
+    if other_cards == ""
+        return "five"
+    end
+    hand = [c for c in hand]
+
+    best_kind = kind(hand)
+    best_rank = findfirst(==(best_kind), KINDS)
+
+    for var in variations(other_cards, length(jokers_at))
+        curr_hand = [c for c in hand]
+        for (i, r) in enumerate(var)
+            curr_hand[jokers_at[i]] = r
+        end
+        curr_kind = kind(curr_hand)
+        kind_rank = findfirst(==(curr_kind), KINDS)
+        if kind_rank > best_rank
+            best_rank = kind_rank
+            best_kind = curr_kind
+        end
+    end
+    return best_kind
+end
+
+function cards_lt(a, b, get_kind=nothing, cards_rank=CARDS)
+    if get_kind === nothing
+        get_kind = kind
+    end
+    ka, kb = get_kind(a), get_kind(b)
     ka, kb = findfirst(==(ka), KINDS), findfirst(==(kb), KINDS)
     if ka == kb 
         for (i, ac) in enumerate(a)
             bc = b[i]
-            ai, bi = findfirst(==(ac), CARDS), findfirst(==(bc), CARDS)
+            ai, bi = findfirst(==(ac), cards_rank), findfirst(==(bc), cards_rank)
             if ai != bi
                 return ai < bi
             end
@@ -55,15 +104,26 @@ function cards_lt(a, b)
     return ka < kb
 end
 
+
 function part1(hands)
     hands = sort!(hands, lt=(a, b)-> cards_lt(a[1], b[1]))
     total = 0
     for (rank, hand) in enumerate(hands)
-        println(hand)
         _, bid = hand
         total += rank*bid
     end
     return total
 end
 
-println("Part 1: ", part1(read_input("input")))
+function part2(hands)
+    hands = sort!(hands, lt=(a, b)-> cards_lt(a[1], b[1], kind_with_joker, CARDS_P2))
+    total = 0
+    for (rank, hand) in enumerate(hands)
+        _, bid = hand
+        total += rank*bid
+    end
+    return total
+end
+
+@time println("Part 1: ", part1(read_input("input")))
+@time println("Part 2: ", part2(read_input("input")))
