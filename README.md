@@ -10,3 +10,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 5, Seeds Fertilizer, Soil](day5-seeds-fertilizer) :seedling: :herb: :cactus:
 * [Day 6, Wait for it](day6-wait-for-it) :speedboat: :rowboat: :hourglass:
 * [Day 7, Camel Cards](day7-camel-cards) :camel: :flower_playing_cards: :moneybag:
+* [Day 8, Haunted Wasteland](day8-haunted-wasteland) :ghost: :ghost: :ghost:
