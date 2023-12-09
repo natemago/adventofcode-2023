@@ -11,3 +11,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 6, Wait for it](day6-wait-for-it) :speedboat: :rowboat: :hourglass:
 * [Day 7, Camel Cards](day7-camel-cards) :camel: :flower_playing_cards: :moneybag:
 * [Day 8, Haunted Wasteland](day8-haunted-wasteland) :ghost: :ghost: :ghost:
+* [Day 9, Mirage Maintenance](day9-mirage-maintenance) :palm_tree: :pager: :floppy_disk:
