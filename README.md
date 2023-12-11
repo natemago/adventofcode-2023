@@ -13,3 +13,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 8, Haunted Wasteland](day8-haunted-wasteland) :ghost: :ghost: :ghost:
 * [Day 9, Mirage Maintenance](day9-mirage-maintenance) :palm_tree: :pager: :floppy_disk:
 * [Day 10, Pipe Maze](day10-pipe-maze) :bathtub: :plunger: :shower:
+* [Day 11, Cosmic Expansion] :star: :collision: :dizzy:
