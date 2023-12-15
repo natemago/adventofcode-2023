@@ -17,3 +17,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 12, Hot Springs](day12-hot-springs) :hotsprings: :bath: :sunrise_over_mountains:
 * [Day 13, Point of Incidence](day13-point-of-incidence) :mirror: :mirror: :plunger:
 * [Day 14, Parabolic Reflector Dish](day14-parabolic-reflector-dish) :satellite: :rock: :rock:
+* [Day 15, Lens Library](day15-lens-library) :eyeglasses: :goggles: :deer:
