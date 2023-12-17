@@ -18,3 +18,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 13, Point of Incidence](day13-point-of-incidence) :mirror: :mirror: :plunger:
 * [Day 14, Parabolic Reflector Dish](day14-parabolic-reflector-dish) :satellite: :rock: :rock:
 * [Day 15, Lens Library](day15-lens-library) :eyeglasses: :goggles: :deer:
+* [Day 16, The Floor Will Be Lava](day16-the-floor-will-be-lava) :volcano: :mirror: :gem:

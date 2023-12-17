@@ -55,10 +55,35 @@ function move_beam(x, y, dir, grid, path)
     throw("BoomZ!")
 end
 
-function move_beams(x, y, grid)
-    stack = [(x, y, right, Set(), Set())]
+function print_energized(energized, grid)
+    for (y, row) in enumerate(grid)
+        for (x, c) in enumerate(row)
+            if (x, y) in energized
+                print("X")
+            else
+                print(c)
+            end
+        end
+        println()
+    end
+end
+
+function move_beams(x, y, grid, init_dir=right)
+    stack = [(x, y, init_dir, Set(), Set())]
+    if grid[y][x] == '\\'
+        stack = [(x, y, down, Set(), Set())]
+    elseif grid[y][x] == '/'
+        stack = [(x, y, up, Set(), Set())]
+    elseif grid[y][x] == '|'
+        stack = [(x, y, down, Set(), Set())]
+    elseif grid[y][x] == '-'
+        stack = [(x, y, right, Set(), Set())]
+    end
     energized = Set()
     push!(energized, (x, y))
+
+    seen_junc = Set()
+
     while length(stack) > 0
         x, y, dir, path, seen_on_beam = pop!(stack)
         (nx, ny), op = move_beam(x, y, dir, grid, path)
@@ -68,15 +93,16 @@ function move_beams(x, y, grid)
         if op === nothing
             continue
         end
-        if (nx, ny, op) in seen_on_beam
+        if (x, y, op, dir) in seen_junc
             continue
         end
+        push!(seen_junc, (x, y, op, dir))
         if op in "\\/"
             ndir = REFLECTIONS[op][dir]
-            push!(stack, (nx, ny, ndir, copy(path), push!(copy(seen_on_beam), (nx, ny, op))))
+            push!(stack, (nx, ny, ndir, copy(path), seen_on_beam))
         elseif op in "-|"
             for ndir in SPLITTERS[op][dir]
-                push!(stack, (nx, ny, ndir, copy(path), push!(copy(seen_on_beam), (nx, ny, op)))) 
+                push!(stack, (nx, ny, ndir, copy(path), seen_on_beam)) 
             end
         else
             throw("invalid op: " * op)
@@ -86,8 +112,34 @@ function move_beams(x, y, grid)
 end
 
 function part1(grid)
-    #println(grid)
-    move_beams(1, 1, grid)
+    return move_beams(1, 1, grid)
 end
 
-println("Part 1: ", part1(read_input("input")))
+function move_beams_thr(x, y, dir, grid, res_chan)
+    res = move_beams(x, y, grid, dir)
+    put!(res_chan, res)
+end
+
+
+function part2(grid)
+    best = 0
+    lk = ReentrantLock()
+    Threads.@threads for x in range(1, length(grid[1]))
+        v1 = move_beams(x, 1, grid, down)
+        v2 = move_beams(x, length(grid), grid, up)
+        lock(lk)
+        best = max(best, v1, v2)
+        unlock(lk)
+    end
+    Threads.@threads for y in range(1, length(grid))
+        v1 = move_beams(1, y, grid, right)
+        v2 = move_beams(length(grid[1]), y, grid, left)
+        lock(lk)
+        best = max(best, v1, v2)
+        unlock(lk)
+    end
+    return best
+end
+
+@time println("Part 1: ", part1(read_input("input")))
+@time println("Part 2: ", part2(read_input("input")))
