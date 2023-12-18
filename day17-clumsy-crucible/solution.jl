@@ -67,9 +67,11 @@ function bfs_path(start, target, heatmap)
     seen = Set()
     final_path = nothing
     final_heat = nothing
+    steps = 0
     while length(q) > 0
         (x, y), heat, in_dir, dir, path = popfirst!(q)
         #println("Looking at:", (x, y, heat, path))
+        steps += 1
         if (x, y, in_dir, dir) in seen
             continue
         end
@@ -92,16 +94,82 @@ function bfs_path(start, target, heatmap)
                 continue
             end
             n_in_dir = 1
-            if ndir == dir || (-ndir[1], -ndir[2]) == dir
+            if ndir == (-dir[1], -dir[2])
+                continue
+            end
+            if ndir == dir
                 if in_dir >= 3
                     continue
                 end
                 n_in_dir = in_dir + 1
             end
-            push!(q, ((nx, ny), heat + heatmap[y][x], n_in_dir, ndir, vcat(path, [((x, y), dir)])))
+            push!(q, ((nx, ny), heat + heatmap[y][x], n_in_dir, ndir, path))# vcat(path, [((x, y), dir)])))
         end
         sort!(q, by=n -> n[2])
     end
+    println("Steps: ", steps)
+    println("Grid:", length(heatmap) * length(heatmap[1]))
+    println("Est:", length(heatmap) * length(heatmap[1]) * 4 * 4)
+    return final_heat - heatmap[start[2]][start[1]], final_path
+end
+
+function part2(heatmap)
+    start = (1, 1)
+    target = (length(heatmap[1]), length(heatmap))
+    q = [(start, 0, 0, (1, 0), [])]
+    seen = Set()
+    final_path = nothing
+    final_heat = nothing
+    estimated = length(heatmap) * length(heatmap[1]) * 11 * 4
+    steps = 0
+    while length(q) > 0
+        (x, y), heat, in_dir, dir, path = popfirst!(q)
+        #println("Looking at:", (x, y, heat, path))
+        steps += 1
+        if (x, y, in_dir, dir) in seen
+            continue
+        end
+        push!(seen, (x, y, in_dir, dir))
+        if (x, y) == target && in_dir >= 4
+            final_heat = heat + heatmap[y][x]
+            final_path = vcat(path, [(target, dir)])
+            break
+        end
+        ns = neighbours(x, y, heatmap)
+        #println(" :: neighbours:", ns)
+        modified = false
+        for (nx, ny) in ns
+            ndir = (nx - x, ny - y)
+            n_in_dir = 1
+            if ndir == (-dir[1], -dir[2])
+                continue
+            end
+            
+            if ndir == dir
+                if in_dir >= 10
+                    continue
+                end
+                n_in_dir = in_dir + 1
+            end
+            if ndir != dir && in_dir < 4
+                continue
+            end
+            if (nx, ny, n_in_dir, ndir) in seen
+                continue
+            end
+            push!(q, ((nx, ny), heat + heatmap[y][x], n_in_dir, ndir, path)) # vcat(path, [((x, y), dir)])))
+            modified = true
+        end
+        if modified
+            sort!(q, by=n -> n[2])
+        end
+        if steps % 1000 == 0
+            println("$(steps) steps of $(estimated) ~$((steps*100)/estimated)% q=$(length(q))")
+        end
+    end
+
+    print_grid(heatmap, final_path)
+
     return final_heat - heatmap[start[2]][start[1]], final_path
 end
 
@@ -119,4 +187,5 @@ function part1(heatmap)
     return heatloss
 end
 
-println("Part 1: ", part1(read_input("input")))
+println("Part 1: ", part1(read_input("test_input")))
+println("Part 2: ", part2(read_input("input")))
