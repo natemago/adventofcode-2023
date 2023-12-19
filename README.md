@@ -19,3 +19,5 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 14, Parabolic Reflector Dish](day14-parabolic-reflector-dish) :satellite: :rock: :rock:
 * [Day 15, Lens Library](day15-lens-library) :eyeglasses: :goggles: :deer:
 * [Day 16, The Floor Will Be Lava](day16-the-floor-will-be-lava) :volcano: :mirror: :gem:
+* [Day 17, Clumsy Crucible](day17-clumsy-crucible) :construction: :star:
+* [Day 18, Lavaduct Lagoon](day18-lavaduct-lagoon) :desert_island: :beach_umbrella: :volcano:
