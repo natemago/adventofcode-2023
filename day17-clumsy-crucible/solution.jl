@@ -4,41 +4,6 @@ function read_input(fn)
     end
 end
 
-function in_same_dir(dir, path)
-    i = length(path)
-    count = 0
-    x, y = nothing, nothing
-    dx, dy = dir
-    while i > 0
-        if x === nothing
-            x,y = path[i]
-            count += 1
-            i -= 1
-            continue
-        end
-        cx, cy = path[i]
-        #println(i, " -> ", (cx, cy), (x, y), dir)
-        if (cx + dx, cy + dy) != (x, y)
-            break
-        end
-        x, y = cx, cy
-        count += 1
-        i -= 1
-    end
-    return count
-end
-
-function neighbours(x, y, heatmap)
-    res = []
-    for (xx, yy) in ((x, y-1), (x-1, y), (x, y+1), (x+1, y))
-        if xx < 1 || xx > length(heatmap[1]) || yy < 1 || yy > length(heatmap)
-            continue
-        end
-        push!(res, (xx, yy))
-    end
-    return res
-end
-
 function print_grid(heatmap, path)
     for (y, row) in enumerate(heatmap)
         for (x, c) in enumerate(row)
@@ -62,130 +27,125 @@ function print_grid(heatmap, path)
     end
 end
 
-function bfs_path(start, target, heatmap)
-    q = [(start, 0, 1, (1, 0), [])]
+mutable struct Heapqueue
+    elements::Vector{Vector{Any}}
+    elmap::Dict{Any, Any}
+    count::Int64
+end
+
+function new_heap_q(size)
+    elements = [[] for i in range(1, size)]
+    return Heapqueue(elements, Dict(), 0)
+end
+
+function pushq(q::Heapqueue, elem, value)
+    push!(q.elements[value], elem)
+    q.elmap[elem] = (value, length(q.elements[value]))
+    q.count += 1
+end
+
+function update_priority(q::Heapqueue, elem, new_value)
+    value, i = q.elmap[elem]
+    #deleteat!(q.elements[value], i)
+    pop!(q.elements[value])
+    q.count -= 1
+    pushq(q, elem, new_value)
+end
+
+function pop_min(q::Heapqueue)
+    if q.count == 0
+        throw("pop from empty queue")
+    end
+    for els in q.elements
+        if length(els) > 0
+            el = popfirst!(els)
+            q.count -= 1
+            return el
+        end
+    end
+end
+
+function solve(heatmap, min_steps=0, max_steps=3)
+    # (x, y, from_dir, to_dir, steps)
+    MAX = 10000
+    q = new_heap_q(MAX+1)
+    pushq(q, (1, 1, (1, 0), (1, 0), 0), 1)
+    pushq(q, (1, 1, (1, 0), (0, 1), 0), 1)
+    dist = Dict()
+    dist[(1, 1, (1, 0), (1, 0), 0)] = 0
+    dist[(1, 1, (1, 0), (0, 1), 0)] = 0
+
     seen = Set()
-    final_path = nothing
-    final_heat = nothing
-    steps = 0
-    while length(q) > 0
-        (x, y), heat, in_dir, dir, path = popfirst!(q)
-        #println("Looking at:", (x, y, heat, path))
-        steps += 1
-        if (x, y, in_dir, dir) in seen
+
+    while q.count > 0
+        x, y, fdir, todir, steps = pop_min(q)
+        d = get(dist, (x, y, fdir, todir, steps), MAX)
+
+        push!(seen, (x, y, fdir, todir, steps))
+        
+        nx, ny = x + todir[1], y + todir[2]
+
+        if nx < 1 || nx > length(heatmap[1]) || ny < 1 || ny > length(heatmap)
             continue
         end
-        push!(seen, (x, y, in_dir, dir))
-        if (x, y) == target
-            final_heat = heat + heatmap[y][x]
-            final_path = vcat(path, [(target, dir)])
-            break
-        end
-        ns = neighbours(x, y, heatmap)
-        #println(" :: neighbours:", ns)
-        for (nx, ny) in ns
-            ndir = (nx - x, ny - y)
-            # println("  :: -> dir=", dir, "=", in_same_dir(dir, path))
-            # if in_same_dir(dir, path) >= 3
-            #     println(" ::", (nx, ny), " in same dir >= 3 with ", (x, y), "; dir=", dir)
-            #     continue
-            # end
-            if (nx, ny) == (x, y)
+
+        available_dirs = []
+        for (dx, dy) in ((0, 1), (0, -1), (1, 0), (-1, 0))
+            if (dx, dy) == (-todir[1], -todir[2])
                 continue
             end
-            n_in_dir = 1
-            if ndir == (-dir[1], -dir[2])
-                continue
-            end
-            if ndir == dir
-                if in_dir >= 3
+            nsteps = 0
+            if (dx, dy) == todir
+                # forward
+                if steps >= max_steps
                     continue
                 end
-                n_in_dir = in_dir + 1
-            end
-            push!(q, ((nx, ny), heat + heatmap[y][x], n_in_dir, ndir, path))# vcat(path, [((x, y), dir)])))
-        end
-        sort!(q, by=n -> n[2])
-    end
-    println("Steps: ", steps)
-    println("Grid:", length(heatmap) * length(heatmap[1]))
-    println("Est:", length(heatmap) * length(heatmap[1]) * 4 * 4)
-    return final_heat - heatmap[start[2]][start[1]], final_path
-end
-
-function part2(heatmap)
-    start = (1, 1)
-    target = (length(heatmap[1]), length(heatmap))
-    q = [(start, 0, 0, (1, 0), [])]
-    seen = Set()
-    final_path = nothing
-    final_heat = nothing
-    estimated = length(heatmap) * length(heatmap[1]) * 11 * 4
-    steps = 0
-    while length(q) > 0
-        (x, y), heat, in_dir, dir, path = popfirst!(q)
-        #println("Looking at:", (x, y, heat, path))
-        steps += 1
-        if (x, y, in_dir, dir) in seen
-            continue
-        end
-        push!(seen, (x, y, in_dir, dir))
-        if (x, y) == target && in_dir >= 4
-            final_heat = heat + heatmap[y][x]
-            final_path = vcat(path, [(target, dir)])
-            break
-        end
-        ns = neighbours(x, y, heatmap)
-        #println(" :: neighbours:", ns)
-        modified = false
-        for (nx, ny) in ns
-            ndir = (nx - x, ny - y)
-            n_in_dir = 1
-            if ndir == (-dir[1], -dir[2])
-                continue
-            end
-            
-            if ndir == dir
-                if in_dir >= 10
+                push!(available_dirs, ((dx, dy), steps+1))
+            else
+                # left/right
+                if min_steps > 0 && steps < min_steps
                     continue
                 end
-                n_in_dir = in_dir + 1
+                push!(available_dirs, ((dx, dy), 1))
             end
-            if ndir != dir && in_dir < 4
-                continue
+            for (ndir, nsteps) in available_dirs
+                nnode = (nx, ny, todir, ndir, nsteps)
+                if nnode in seen
+                    continue
+                end
+
+                curr = get(dist, nnode, MAX)
+                alt = d + heatmap[ny][nx]
+
+                if !haskey(q.elmap, nnode)
+                    pushq(q, nnode, MAX+1)
+                end
+
+                if alt < curr
+                    dist[nnode] = alt
+                    update_priority(q, nnode, alt+1)
+                end
+
             end
-            if (nx, ny, n_in_dir, ndir) in seen
-                continue
-            end
-            push!(q, ((nx, ny), heat + heatmap[y][x], n_in_dir, ndir, path)) # vcat(path, [((x, y), dir)])))
-            modified = true
         end
-        if modified
-            sort!(q, by=n -> n[2])
-        end
-        if steps % 1000 == 0
-            println("$(steps) steps of $(estimated) ~$((steps*100)/estimated)% q=$(length(q))")
+
+    end
+    min_dist = MAX
+    for (key, val) in dist
+        if key[1] == length(heatmap[1]) && key[2] == length(heatmap)
+            if min_steps > 0 && key[end] >= min_steps
+                if val < min_dist
+                    min_dist = val
+                end
+            else
+                if val < min_dist
+                    min_dist = val
+                end
+            end
         end
     end
-
-    print_grid(heatmap, final_path)
-
-    return final_heat - heatmap[start[2]][start[1]], final_path
+    return min_dist
 end
 
-function part1(heatmap)
-    #println(in_same_dir((0, 1), [(1,1), (1,2), (1, 3)]))
-    heatloss, path = bfs_path((1, 1), (length(heatmap[1]), length(heatmap)), heatmap)
-    println(path)
-    print_grid(heatmap, path)
-    s = 0
-    for ((x, y), _) in path
-        println((x, y), "->", heatmap[y][x])
-        s += heatmap[y][x]
-    end
-    println("S->", s)
-    return heatloss
-end
-
-println("Part 1: ", part1(read_input("test_input")))
-println("Part 2: ", part2(read_input("input")))
+println("Part 1: ", solve(read_input("input"), 0, 3))
+println("Part 2: ", solve(read_input("input"), 4, 10))
