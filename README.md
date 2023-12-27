@@ -21,3 +21,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 16, The Floor Will Be Lava](day16-the-floor-will-be-lava) :volcano: :mirror: :gem:
 * [Day 17, Clumsy Crucible](day17-clumsy-crucible) :volcano: :railway_car: :train:
 * [Day 18, Lavaduct Lagoon](day18-lavaduct-lagoon) :desert_island: :beach_umbrella: :volcano:
+* [Day 19, Aplenty](day19-aplenty) :factory_worker: :factory: :gear:
