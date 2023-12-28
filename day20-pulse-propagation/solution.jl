@@ -206,7 +206,7 @@ function part2(modules)
         println("Module $(n) of type: $(typeof(m))")
     end
 
-    # rx connects to a conjuction and we want all inputs to the conjuction to hbe "high".
+    # rx connects to a conjuction and we want all inputs to the conjuction to be "high".
     # If rx connects to a flip-flop, then we want "low" etc.
     # But fortunately it just goes to conjuction straight away.
     conj_to_rx = which_nodes_connect_to("rx", modules)[1]
@@ -216,7 +216,7 @@ function part2(modules)
     while true
         count += 1
         any_high = Dict()
-        # Push the button, but chech if the last conjuction to "rx" has any of the inputs set to "high".
+        # Push the button, but check if the last conjuction to "rx" has any of the inputs set to "high".
         push_button(modules, any_high, conj_to_rx[1])
         if length(any_high) > 0
             for (m, _) in any_high
@@ -232,7 +232,7 @@ function part2(modules)
         # We want to collect data for all inputs on the last conjuction.
         if length(where_high) == length(conj_to_rx[2].inputs)
             # And we assume that 2 numbers are enough to extract a cycle sequence.
-            # So if we have found at least 2 times where we had "high" on all inputs, the find the cycles.
+            # So if we have found at least 2 times where we had "high" on all inputs, then find the cycles.
             at_least_2 = true
             for (_, v) in where_high
                 if length(v) < 2
@@ -247,7 +247,7 @@ function part2(modules)
                     push!(diffs, v[2] - v[1])
                 end
                 println(diffs)
-                # No LCM over those cycles, and done.
+                # Now LCM over those cycles, and done.
                 return lcm(diffs...)
             end
         end
