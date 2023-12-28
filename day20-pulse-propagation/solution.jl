@@ -197,26 +197,6 @@ function which_nodes_connect_to(mod, modules)
 end
 
 function part2(modules)
-    global RX_COUNT
-    count = 0
-    while true
-        count += 1
-        push_button(modules)
-        if count % 10000 == 0
-            println(count,": ", RX_COUNT)
-        end
-        if RX_COUNT == 1
-            return count
-        end
-        if RX_COUNT >= 1
-            println(" *** count=", count)
-        end
-        RX_COUNT = 0
-    end
-    return count
-end
-
-function part2(modules)
     to_mod = which_nodes_connect_to("rx", modules) # "rx" is always connected to conjuction (assumption)
     while length(to_mod) == 1
         to_mod = which_nodes_connect_to(to_mod[1][1], modules)
@@ -274,5 +254,5 @@ function part2(modules)
     end
 end
 
-println("Part 1: ", part1(read_input("input")))
-println("Part 2: ", part2(read_input("input")))
+@time println("Part 1: ", part1(read_input("input")))
+@time println("Part 2: ", part2(read_input("input")))
