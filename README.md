@@ -22,3 +22,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 17, Clumsy Crucible](day17-clumsy-crucible) :volcano: :railway_car: :train:
 * [Day 18, Lavaduct Lagoon](day18-lavaduct-lagoon) :desert_island: :beach_umbrella: :volcano:
 * [Day 19, Aplenty](day19-aplenty) :factory_worker: :factory: :gear:
+* [Day 20, Pulse Propagation](day20-pulse-propagation) :monkey_face: :monkey: :orangutan:
