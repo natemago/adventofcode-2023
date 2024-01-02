@@ -23,3 +23,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 18, Lavaduct Lagoon](day18-lavaduct-lagoon) :desert_island: :beach_umbrella: :volcano:
 * [Day 19, Aplenty](day19-aplenty) :factory_worker: :factory: :gear:
 * [Day 20, Pulse Propagation](day20-pulse-propagation) :monkey_face: :monkey: :orangutan:
+* [Day 21, Step Counter](day21-step-counter) :house_with_garden: :pager: :tulip:
