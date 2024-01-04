@@ -24,3 +24,4 @@ Solutions to [Advent Of Code puzzles 2023](https://adventofcode.com/2023)
 * [Day 19, Aplenty](day19-aplenty) :factory_worker: :factory: :gear:
 * [Day 20, Pulse Propagation](day20-pulse-propagation) :monkey_face: :monkey: :orangutan:
 * [Day 21, Step Counter](day21-step-counter) :house_with_garden: :pager: :tulip:
+* [Day 22, Sand Slabs](day22-sand-slabs) :bricks: :desert: :hourglass_flowing_sand:
